@@ -134,60 +134,16 @@ jobs:
     if: always() && needs.check-changes.outputs.backend-changed == 'true'
 
     steps:
-    - name: Notify success
-      if: needs.build-and-push.result == 'success'
-      run: |
-        echo "Backend staging build completed successfully!"
-        echo "Image: ${{ env.DOCKER_IMAGE }}:staging"
-        
-        # Send to Discord
-        if [ -n "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
-          curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "embeds": [{
-                "title": "Backend Build Success",
-                "description": "Staging deployment ready!",
-                "color": 65280,
-                "fields": [
-                  {
-                    "name": "Image",
-                    "value": "`${{ env.DOCKER_IMAGE }}:staging`",
-                    "inline": true
-                  },
-                  {
-                    "name": "Branch", 
-                    "value": "`${{ github.ref_name }}`",
-                    "inline": true
-                  },
-                ],
-                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
-              }]
-            }'
-        fi
+      - name: Notify result to Discord
+        run: |
+          JOB_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          
+          if [ "${{ needs.build-and-push.result }}" == "success" ]; then
+            MESSAGE="Backend build successful.\nImage: ${{ env.DOCKER_IMAGE }}:staging\nBranch: ${{ github.ref_name }}"
+          else
+            MESSAGE="Backend build failed.\nBranch: ${{ github.ref_name }}\nCheck logs: $JOB_URL"
+          fi
 
-    - name: Notify failure
-      if: needs.test.result == 'failure' || needs.build-and-push.result == 'failure'
-      run: |
-        echo "Backend staging build failed!"
-        
-        # Send to Discord
-        if [ -n "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
           curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
-            -d '{
-              "embeds": [{
-                "title": "Backend Build Failed",
-                "description": "Staging deployment failed!",
-                "color": 16711680,
-                "fields": [
-                  {
-                    "name": "Branch",
-                    "value": "`${{ github.ref_name }}`",
-                    "inline": true
-                  }
-                ],
-                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
-              }]
-            }'
-        fi
+            -d "{\"content\": \"$MESSAGE\"}"
