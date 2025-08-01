@@ -10,7 +10,6 @@ logs
 *.log
 coverage/
 jspm_packages/
-*.tsbuildinfo
 dist
 test-results/
 dist/
