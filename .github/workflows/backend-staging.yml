@@ -131,7 +131,7 @@ jobs:
     name: Notify Backend Build Status
     runs-on: ubuntu-latest
     needs: [check-changes, test, build-and-push]
-    if: always() && needs.check-changes.outputs.backend-changed == 'true'
+    if: always() && needs.check-changes.outputs.backend-changed == 'true' && github.event_name == 'push'
 
     steps:
       - name: Notify result to Discord
