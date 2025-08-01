@@ -1,0 +1,12 @@
+node_modules/
+npm-debug.log*
+.env*
+!.env.example
+coverage/
+tests/
+test/
+__tests__/
+*.test.js
+*.spec.js
+jest.config.js
+!public/index.html
