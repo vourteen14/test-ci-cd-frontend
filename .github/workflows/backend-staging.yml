@@ -13,7 +13,7 @@ on:
       - '.github/workflows/backend-staging.yml'
 
 env:
-  DOCKER_IMAGE: heypico/backend-api
+  DOCKER_IMAGE: vourteen14/heypico-backend:staging
   WORKING_DIRECTORY: web-application/backend
 
 jobs:
@@ -37,7 +37,7 @@ jobs:
           echo "Backend changes detected"
         else
           echo "backend=false" >> $GITHUB_OUTPUT
-          echo "ℹNo backend changes detected"
+          echo "No backend changes detected"
         fi
 
   test:
