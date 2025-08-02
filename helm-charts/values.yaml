@@ -39,12 +39,12 @@ ingress:
   hosts:
     - host: heypico-staging.local
       paths:
-        - path: /
-          pathType: Prefix
-          service: frontend
         - path: /api
           pathType: Prefix
           service: backend
+        - path: /
+          pathType: Prefix
+          service: frontend
   tls: []
 resources:
   backend:

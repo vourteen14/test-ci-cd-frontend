@@ -14,7 +14,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-app.get('/users', async (req, res) => {
+app.get('/api/users', async (req, res) => {
   try {
     const users = await User.findAll({
       order: [['created_at', 'DESC']]
@@ -33,7 +33,7 @@ app.get('/users', async (req, res) => {
   }
 });
 
-app.get('/users/:id', async (req, res) => {
+app.get('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id);
@@ -58,7 +58,7 @@ app.get('/users/:id', async (req, res) => {
   }
 });
 
-app.post('/users', async (req, res) => {
+app.post('/api/users', async (req, res) => {
   try {
     const { name, email, age } = req.body;
     
@@ -103,7 +103,7 @@ app.post('/users', async (req, res) => {
   }
 });
 
-app.put('/users/:id', async (req, res) => {
+app.put('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, age } = req.body;
@@ -157,7 +157,7 @@ app.put('/users/:id', async (req, res) => {
   }
 });
 
-app.delete('/users/:id', async (req, res) => {
+app.delete('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id);
