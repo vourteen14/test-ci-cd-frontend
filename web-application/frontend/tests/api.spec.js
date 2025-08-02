@@ -89,7 +89,6 @@ describe('API Service Mock Tests', () => {
   })
 
   test('API handles multiple users', async () => {
-    // Mock multiple users response
     const mockUsers = [
       { id: 1, name: 'User 1', email: 'user1@example.com', age: 25 },
       { id: 2, name: 'User 2', email: 'user2@example.com', age: 30 }
