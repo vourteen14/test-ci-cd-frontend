@@ -28,12 +28,6 @@ class ToastService {
 
     const toastHtml = `
       <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-dark text-light border-secondary">
-          <i class="${iconMap[type]} me-2"></i>
-          <strong class="me-auto text-capitalize">${type}</strong>
-          <small>now</small>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-        </div>
         <div class="toast-body bg-secondary text-light">
           ${message}
         </div>
