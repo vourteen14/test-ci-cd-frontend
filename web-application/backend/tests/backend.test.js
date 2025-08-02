@@ -17,7 +17,6 @@ jest.mock('../src/models', () => ({
 const { User } = require('../src/models');
 
 describe('Backend API Tests with Mock Database', () => {
-  // Clear all mocks before each test
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -35,13 +34,12 @@ describe('Backend API Tests with Mock Database', () => {
   });
 
   describe('User CRUD Operations', () => {
-    describe('GET /users', () => {
+    describe('GET /api/users', () => {
       test('should return empty array when no users exist', async () => {
-        // Mock empty result
         User.findAll.mockResolvedValue([]);
 
         const response = await request(app)
-          .get('/users')
+          .get('/api/users')
           .expect(200);
 
         expect(response.body).toEqual({
@@ -75,7 +73,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findAll.mockResolvedValue(mockUsers);
 
         const response = await request(app)
-          .get('/users')
+          .get('/api/users')
           .expect(200);
 
         expect(response.body.success).toBe(true);
@@ -88,7 +86,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findAll.mockRejectedValue(new Error('Database connection failed'));
 
         const response = await request(app)
-          .get('/users')
+          .get('/api/users')
           .expect(500);
 
         expect(response.body).toEqual({
@@ -98,7 +96,7 @@ describe('Backend API Tests with Mock Database', () => {
       });
     });
 
-    describe('GET /users/:id', () => {
+    describe('GET /api/users/:id', () => {
       test('should return specific user by ID', async () => {
         const mockUser = {
           id: 1,
@@ -111,7 +109,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findByPk.mockResolvedValue(mockUser);
 
         const response = await request(app)
-          .get('/users/1')
+          .get('/api/users/1')
           .expect(200);
 
         expect(response.body).toEqual({
@@ -126,7 +124,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findByPk.mockResolvedValue(null);
 
         const response = await request(app)
-          .get('/users/999')
+          .get('/api/users/999')
           .expect(404);
 
         expect(response.body).toEqual({
@@ -139,7 +137,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findByPk.mockRejectedValue(new Error('Database error'));
 
         const response = await request(app)
-          .get('/users/1')
+          .get('/api/users/1')
           .expect(500);
 
         expect(response.body).toEqual({
@@ -149,7 +147,7 @@ describe('Backend API Tests with Mock Database', () => {
       });
     });
 
-    describe('POST /users', () => {
+    describe('POST /api/users', () => {
       test('should create a new user with valid data', async () => {
         const userData = {
           name: 'New User',
@@ -167,7 +165,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.create.mockResolvedValue(mockCreatedUser);
 
         const response = await request(app)
-          .post('/users')
+          .post('/api/users')
           .send(userData)
           .expect(201);
 
@@ -185,7 +183,7 @@ describe('Backend API Tests with Mock Database', () => {
         };
 
         const response = await request(app)
-          .post('/users')
+          .post('/api/users')
           .send(userData)
           .expect(400);
 
@@ -204,7 +202,7 @@ describe('Backend API Tests with Mock Database', () => {
         };
 
         const response = await request(app)
-          .post('/users')
+          .post('/api/users')
           .send(userData)
           .expect(400);
 
@@ -221,7 +219,7 @@ describe('Backend API Tests with Mock Database', () => {
         };
 
         const response = await request(app)
-          .post('/users')
+          .post('/api/users')
           .send(userData)
           .expect(400);
 
@@ -247,7 +245,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.create.mockRejectedValue(validationError);
 
         const response = await request(app)
-          .post('/users')
+          .post('/api/users')
           .send(userData)
           .expect(400);
 
@@ -270,7 +268,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.create.mockRejectedValue(uniqueError);
 
         const response = await request(app)
-          .post('/users')
+          .post('/api/users')
           .send(userData)
           .expect(409);
 
@@ -290,7 +288,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.create.mockRejectedValue(new Error('Database connection failed'));
 
         const response = await request(app)
-          .post('/users')
+          .post('/api/users')
           .send(userData)
           .expect(500);
 
@@ -301,7 +299,7 @@ describe('Backend API Tests with Mock Database', () => {
       });
     });
 
-    describe('PUT /users/:id', () => {
+    describe('PUT /api/users/:id', () => {
       test('should update existing user with valid data', async () => {
         const updatedData = {
           name: 'Updated Name',
@@ -317,7 +315,6 @@ describe('Backend API Tests with Mock Database', () => {
           update: jest.fn().mockResolvedValue(true)
         };
 
-        // After update, return updated user
         const updatedUser = { ...mockUser, ...updatedData };
         mockUser.update.mockImplementation(() => {
           Object.assign(mockUser, updatedData);
@@ -327,7 +324,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findByPk.mockResolvedValue(mockUser);
 
         const response = await request(app)
-          .put('/users/1')
+          .put('/api/users/1')
           .send(updatedData)
           .expect(200);
 
@@ -348,7 +345,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findByPk.mockResolvedValue(null);
 
         const response = await request(app)
-          .put('/users/999')
+          .put('/api/users/999')
           .send(updatedData)
           .expect(404);
 
@@ -360,8 +357,8 @@ describe('Backend API Tests with Mock Database', () => {
 
       test('should return 400 when required fields are missing', async () => {
         const response = await request(app)
-          .put('/users/1')
-          .send({ name: 'Updated Name' }) // Missing email and age
+          .put('/api/users/1')
+          .send({ name: 'Updated Name' })
           .expect(400);
 
         expect(response.body).toEqual({
@@ -391,7 +388,7 @@ describe('Backend API Tests with Mock Database', () => {
         mockUser.update.mockRejectedValue(uniqueError);
 
         const response = await request(app)
-          .put('/users/1')
+          .put('/api/users/1')
           .send(updatedData)
           .expect(409);
 
@@ -402,7 +399,7 @@ describe('Backend API Tests with Mock Database', () => {
       });
     });
 
-    describe('DELETE /users/:id', () => {
+    describe('DELETE /api/users/:id', () => {
       test('should delete existing user', async () => {
         const mockUser = {
           id: 1,
@@ -415,7 +412,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findByPk.mockResolvedValue(mockUser);
 
         const response = await request(app)
-          .delete('/users/1')
+          .delete('/api/users/1')
           .expect(200);
 
         expect(response.body).toEqual({
@@ -431,7 +428,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findByPk.mockResolvedValue(null);
 
         const response = await request(app)
-          .delete('/users/999')
+          .delete('/api/users/999')
           .expect(404);
 
         expect(response.body).toEqual({
@@ -449,7 +446,7 @@ describe('Backend API Tests with Mock Database', () => {
         User.findByPk.mockResolvedValue(mockUser);
 
         const response = await request(app)
-          .delete('/users/1')
+          .delete('/api/users/1')
           .expect(500);
 
         expect(response.body).toEqual({
@@ -463,17 +460,15 @@ describe('Backend API Tests with Mock Database', () => {
   describe('Edge Cases and Error Handling', () => {
     test('should handle malformed JSON requests', async () => {
       const response = await request(app)
-        .post('/users')
+        .post('/api/users')
         .send('invalid json')
         .set('Content-Type', 'application/json')
         .expect(400);
-      
-      // Express will handle malformed JSON automatically
     });
 
     test('should handle empty request body', async () => {
       const response = await request(app)
-        .post('/users')
+        .post('/api/users')
         .send({})
         .expect(400);
 
@@ -491,9 +486,8 @@ describe('Backend API Tests with Mock Database', () => {
 
       User.findAll.mockResolvedValue(mockUsers);
 
-      // Make multiple concurrent requests
       const requests = Array(5).fill(null).map(() => 
-        request(app).get('/users').expect(200)
+        request(app).get('/api/users').expect(200)
       );
 
       const responses = await Promise.all(requests);
@@ -508,7 +502,6 @@ describe('Backend API Tests with Mock Database', () => {
   });
 });
 
-// tests/models/user.mock.test.js - Mock Model Tests
 describe('User Model Mock Tests', () => {
   const mockSequelize = {
     define: jest.fn(),
@@ -563,10 +556,8 @@ describe('User Model Mock Tests', () => {
     const invalidUserData = {
       email: 'test@example.com',
       age: 25
-      // Missing name
     };
 
-    // Simulate validation error
     const validationError = new Error('Validation error');
     validationError.name = 'SequelizeValidationError';
     validationError.errors = [
@@ -594,7 +585,6 @@ describe('User Model Mock Tests', () => {
     ];
 
     expect(() => {
-      // Simple email validation mock
       if (!invalidEmailData.email.includes('@')) {
         throw emailValidationError;
       }
@@ -607,7 +597,6 @@ describe('User Model Mock Tests', () => {
     duplicateEmailError.fields = ['email'];
 
     expect(() => {
-      // Simulate duplicate email scenario
       const existingEmails = ['existing@example.com'];
       const newEmail = 'existing@example.com';
       
@@ -618,20 +607,15 @@ describe('User Model Mock Tests', () => {
   });
 });
 
-// tests/setup.mock.js - Simplified test setup without database
-// Global test setup for mock environment
 beforeAll(async () => {
-  // Set test environment
   process.env.NODE_ENV = 'test';
-  console.log('🧪 Running tests with mock database');
+  console.log('Running tests with mock database');
 });
 
-// No database cleanup needed with mocks
 afterAll(async () => {
-  console.log('✅ Mock tests completed');
+  console.log('Mock tests completed');
 });
 
-// Handle unhandled promise rejections in tests
 process.on('unhandledRejection', (reason, promise) => {
   console.log('Unhandled Rejection at:', promise, 'reason:', reason);
 });
