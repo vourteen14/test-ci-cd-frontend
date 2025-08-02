@@ -4,11 +4,11 @@ replicaCount:
 image:
   backend:
     repository: vourteen14/heypico-backend
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: "staging"
   frontend:
     repository: vourteen14/heypico-frontend
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: "staging"
 imagePullSecrets: []
 nameOverride: ""
