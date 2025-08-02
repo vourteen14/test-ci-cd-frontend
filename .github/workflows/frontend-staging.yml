@@ -121,7 +121,7 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
-          VUE_APP_API_URL=${{ vars.STAGING_API_URL }}
+          VUE_APP_API_URL=${{ secrets.STAGING_API_URL }}
           NODE_ENV=staging
         cache-from: type=gha
         cache-to: type=gha,mode=max

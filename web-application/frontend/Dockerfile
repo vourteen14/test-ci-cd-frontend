@@ -8,8 +8,10 @@ RUN npm install
 ARG VUE_APP_API_URL
 ENV VUE_APP_API_URL=$VUE_APP_API_URL
 
+RUN echo "VUE_APP_API_URL: $VUE_APP_API_URL"
+
 COPY . .
-RUN VUE_APP_API_URL=$VUE_APP_API_URL npm run build
+RUN npm run build
 
 FROM nginx:stable-alpine AS production
 
