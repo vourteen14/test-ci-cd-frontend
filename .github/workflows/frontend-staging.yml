@@ -64,21 +64,14 @@ jobs:
       run: npm ci
 
     - name: Run ESLint
-      run: npm run lint || echo "No lint script found"
+      run: npm run lint
       continue-on-error: true
 
     - name: Run unit tests
-      run: npm run test:unit || npm run test || echo "No test script found"
+      run: npm run test:ci
       continue-on-error: true
       env:
         CI: true
-
-    - name: Build for staging (test build)
-      run: npm run build
-      env:
-        NODE_ENV: staging
-        VUE_APP_API_URL: ${{ vars.STAGING_API_URL || 'http://localhost:3080' }}
-        VUE_APP_ENV: staging
 
   build-and-push:
     name: Build & Push Frontend Docker Image

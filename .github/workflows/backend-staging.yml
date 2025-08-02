@@ -68,13 +68,6 @@ jobs:
       env:
         NODE_ENV: test
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ${{ env.WORKING_DIRECTORY }}/coverage/lcov.info
-        flags: backend-unittests
-        name: backend-coverage
-
   build-and-push:
     name: Build & Push Backend Docker Image
     runs-on: ubuntu-latest

@@ -11,6 +11,5 @@ logs
 coverage/
 jspm_packages/
 dist
-test-results/
 dist/
 build/
