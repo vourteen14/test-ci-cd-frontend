@@ -7,23 +7,27 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: { title: 'Home - Web Application' }
   },
   {
     path: '/users',
     name: 'Users',
-    component: User
+    component: User,
+    meta: { title: 'User List - Web Application' }
   },
   {
     path: '/users/new',
     name: 'CreateUser',
-    component: UserForm
+    component: UserForm,
+    meta: { title: 'Create User - Web Application' }
   },
   {
     path: '/users/:id/edit',
     name: 'EditUser',
     component: UserForm,
-    props: true
+    props: true,
+    meta: { title: 'Edit User - Web Application' }
   }
 ]
 

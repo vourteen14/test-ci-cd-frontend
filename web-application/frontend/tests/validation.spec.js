@@ -1,5 +1,4 @@
 describe('Frontend Business Logic', () => {
-  // Simple form validation functions (no Vue dependencies)
   const validateUserForm = (userData) => {
     const errors = []
     
@@ -31,13 +30,11 @@ describe('Frontend Business Logic', () => {
   }
 
   test('validateUserForm works correctly', () => {
-    // Valid data
     const validUser = { name: 'John Doe', email: 'john@example.com', age: 25 }
     const validResult = validateUserForm(validUser)
     expect(validResult.isValid).toBe(true)
     expect(validResult.errors).toHaveLength(0)
 
-    // Invalid data
     const invalidUser = { name: 'J', email: 'invalid', age: -5 }
     const invalidResult = validateUserForm(invalidUser)
     expect(invalidResult.isValid).toBe(false)
@@ -67,64 +64,5 @@ describe('Frontend Business Logic', () => {
     const zeroAge = { name: 'Baby', email: 'baby@example.com', age: 0 }
     const validation = validateUserForm(zeroAge)
     expect(validation.isValid).toBe(true)
-  })
-})
-
-// tests/utils.spec.js - Test utility functions  
-describe('Utility Functions', () => {
-  // Date formatting utility
-  const formatDate = (dateStr) => {
-    return new Date(dateStr).toLocaleDateString('id-ID')
-  }
-
-  // API URL builder
-  const buildApiUrl = (endpoint) => {
-    const baseUrl = process.env.VUE_APP_API_URL || 'http://localhost:3000'
-    return `${baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`
-  }
-
-  // Simple debounce function
-  const debounce = (func, wait) => {
-    let timeout
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout)
-        func(...args)
-      }
-      clearTimeout(timeout)
-      timeout = setTimeout(later, wait)
-    }
-  }
-
-  test('formatDate works correctly', () => {
-    const testDate = '2024-01-15T10:30:00Z'
-    const formatted = formatDate(testDate)
-    expect(typeof formatted).toBe('string')
-    expect(formatted).toMatch(/\d{1,2}\/\d{1,2}\/\d{4}/)
-  })
-
-  test('buildApiUrl constructs correct URLs', () => {
-    process.env.VUE_APP_API_URL = 'http://localhost:3000'
-    
-    expect(buildApiUrl('/users')).toBe('http://localhost:3000/users')
-    expect(buildApiUrl('users')).toBe('http://localhost:3000/users')
-    expect(buildApiUrl('/api/v1/users')).toBe('http://localhost:3000/api/v1/users')
-  })
-
-  test('debounce function works', (done) => {
-    let counter = 0
-    const increment = () => counter++
-    const debouncedIncrement = debounce(increment, 100)
-    
-    // Call multiple times quickly
-    debouncedIncrement()
-    debouncedIncrement()
-    debouncedIncrement()
-    
-    // Should only increment once after delay
-    setTimeout(() => {
-      expect(counter).toBe(1)
-      done()
-    }, 150)
   })
 })

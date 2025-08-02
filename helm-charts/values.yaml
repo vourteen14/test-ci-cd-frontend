@@ -1,0 +1,96 @@
+replicaCount:
+  backend: 1
+  frontend: 1
+image:
+  backend:
+    repository: vourteen14/heypico-backend
+    pullPolicy: IfNotPresent
+    tag: "staging"
+  frontend:
+    repository: vourteen14/heypico-frontend
+    pullPolicy: IfNotPresent
+    tag: "staging"
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  backend:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+  frontend:
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: heypico-staging.local
+      paths:
+        - path: /
+          pathType: Prefix
+          service: frontend
+        - path: /api
+          pathType: Prefix
+          service: backend
+  tls: []
+resources:
+  backend:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 256Mi
+  frontend:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+nodeSelector: {}
+tolerations: []
+affinity: {}
+database:
+  host: "postgres-postgresql.heypico.svc.cluster.local"
+  port: 5432
+  name: "backend"
+  user: "heypico"
+  existingSecret: "postgres-secret"
+  secretKey: "password"
+env:
+  backend:
+    NODE_ENV: "production"
+    HOST: "0.0.0.0"
+    PORT: "3000"
+  frontend:
+    VUE_APP_API_URL: "http://heypico-staging.local/api"
+healthCheck:
+  backend:
+    enabled: true
+    path: "/health"
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  frontend:
+    enabled: true
+    path: "/"
+    initialDelaySeconds: 15
+    periodSeconds: 10

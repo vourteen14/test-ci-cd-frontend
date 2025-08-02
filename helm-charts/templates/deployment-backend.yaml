@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "heypico-web-app.fullname" . }}-backend
+  labels:
+    {{- include "heypico-web-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount.backend }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "heypico-web-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: backend
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "heypico-web-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: backend
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "heypico-web-app.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: backend
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.backend.repository }}:{{ .Values.image.backend.tag }}"
+          imagePullPolicy: {{ .Values.image.backend.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.backend.targetPort }}
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: {{ .Values.env.backend.NODE_ENV }}
+            - name: HOST
+              value: {{ .Values.env.backend.HOST }}
+            - name: PORT
+              value: {{ .Values.env.backend.PORT | quote }}
+            - name: DB_HOST
+              value: {{ .Values.database.host }}
+            - name: DB_PORT
+              value: {{ .Values.database.port | quote }}
+            - name: DB_NAME
+              value: {{ .Values.database.name }}
+            - name: DB_USER
+              value: {{ .Values.database.user }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.existingSecret }}
+                  key: {{ .Values.database.secretKey }}
+          {{- if .Values.healthCheck.backend.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.backend.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.healthCheck.backend.initialDelaySeconds }}
+            periodSeconds: {{ .Values.healthCheck.backend.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.backend.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.healthCheck.backend.initialDelaySeconds }}
+            periodSeconds: {{ .Values.healthCheck.backend.periodSeconds }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources.backend | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
