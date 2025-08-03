@@ -1,6 +1,3 @@
-# Dscription
-Kubernetes YAML and HELM manifest for deploy Loki and Promtail. Loki for store cerntralize logs and promtail for collect the log from nodes and forwards them to Loki. 
-
 # Apply Namespace
 kubectl apply -f namespace.yaml
 

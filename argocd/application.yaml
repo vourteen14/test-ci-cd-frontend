@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: heypico-app
+  name: heypico
   namespace: argocd
   annotations:
     argocd-image-updater.argoproj.io/image-list: backend=docker.io/vourteen14/heypico-backend,frontend=docker.io/vourteen14/heypico-frontend
-    argocd-image-updater.argoproj.io/backend.update-strategy: staging
-    argocd-image-updater.argoproj.io/frontend.update-strategy: staging
+    argocd-image-updater.argoproj.io/backend.update-strategy: latest
+    argocd-image-updater.argoproj.io/frontend.update-strategy: latest
 spec:
   project: default
   source:
-    repoURL: https://github.com/vourteen14/test-ci-cd-frontend.git
+    repoURL: https://github.com/vourteen14/heypico.ai-skillz-test.git
     path: helm-charts
     targetRevision: staging
     helm:

@@ -127,17 +127,17 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/whitelist-source-range: "23.94.73.116/32, 10.68.0.0/16" # allow from vpn public and pod network (blackbox exporter)
+    nginx.ingress.kubernetes.io/whitelist-source-range: "23.94.73.116/32, 10.68.0.0/16, 192.168.1.0/24" # allow from vpn public and pod network (blackbox exporter)
   labels: {}
   path: /
   pathType: Prefix
   hosts:
-    - grafana2.angga-sr.xyz
+    - grafana.heypico-staging.local
   extraPaths: []
   tls:
-    - secretName: wildcard-cert
+    - secretName: heypico-cert 
       hosts:
-        - grafana2.angga-sr.xyz
+        - grafana.heypico-staging.local
 route:
   main:
     enabled: false
@@ -164,7 +164,7 @@ extraContainerVolumes: []
 persistence:
   type: pvc
   enabled: true
-  storageClassName: "standard"
+  storageClassName: "local-path" # local-path for testing
   volumeName: ""
   accessModes:
     - ReadWriteOnce

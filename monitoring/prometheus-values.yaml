@@ -97,17 +97,17 @@ server:
     annotations:
       kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/whitelist-source-range: "23.94.73.116/32, 10.68.0.0/16" # allow from vpn public and pod network (blackbox exporter)
+      nginx.ingress.kubernetes.io/whitelist-source-range: "23.94.73.116/32, 10.68.0.0/16, 192.168.1.0/24" # allow from vpn public and pod network (blackbox exporter)
     extraLabels: {}
     hosts:
-      - prometheus.angga-sr.xyz
+      - prometheus.heypico-staging.local
     path: /
     pathType: Prefix
     extraPaths: []
     tls:
-      - secretName: wildcard-cert
+      - secretName: heypico-cert 
         hosts:
-          - prometheus.angga-sr.xyz
+          - prometheus.heypico-staging.local
   strategy:
     type: Recreate
   hostAliases: []
@@ -122,14 +122,14 @@ server:
   persistentVolume:
     enabled: true
     statefulSetNameOverride: ""
-    storageClassName: "standard"
+    storageClassName: "local-path" # local path for testing 
     accessModes:
       - ReadWriteOnce
     labels: {}
     annotations: {}
     existingClaim: ""
     mountPath: /data
-    size: 8Gi
+    size: 1Gi
     subPath: ""
   emptyDir:
     sizeLimit: ""
@@ -460,10 +460,10 @@ serverFiles:
           module: [http_2xx]
         static_configs:
           - targets:
-              - https://app2.angga-sr.xyz
-              - https://grafana.angga-sr.xyz
-              - https://prometheus.angga-sr.xyz
-              - https://dashboard.angga-sr.xyz
+              - http://heypico-staging.local
+              - http://grafana.heypico-staging.local
+              - http://prometheus.heypico-staging.local
+              - http://dashboard.heypico-staging.local
         relabel_configs:
           - source_labels: [__address__]
             target_label: __param_target
