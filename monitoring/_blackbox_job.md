@@ -4,9 +4,9 @@
     module: [http_2xx]
   static_configs:
     - targets:
-      - https://apps2.angga-sr.xyz
-      - https://grafana.angga-sr.xyz
-      - https://prometheus.angga-sr.xyz
+      - http://heypico-staging.local
+      - http://grafana.heypico-staging.local
+      - http://prometheus.heypico-staging.local
       - 
   relabel_configs:
     - source_labels: [__address__]

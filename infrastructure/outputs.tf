@@ -1,21 +1,52 @@
+output "vpc_id" {
+  description = "VPC ID"
+  value       = aws_vpc.main.id
+}
+
+output "vpc_cidr" {
+  description = "VPC CIDR block"
+  value       = aws_vpc.main.cidr_block
+}
+
+output "public_subnet_ids" {
+  description = "Public subnet IDs"
+  value       = aws_subnet.public[*].id
+}
+
+output "private_subnet_ids" {
+  description = "Private subnet IDs"
+  value       = aws_subnet.private[*].id
+}
+
 output "cluster_name" {
-  value = google_container_cluster.angga_suriana_gke_cluster.name
+  description = "EKS cluster name"
+  value       = aws_eks_cluster.main.name
 }
 
 output "cluster_endpoint" {
-  value = google_container_cluster.angga_suriana_gke_cluster.endpoint
+  description = "EKS cluster endpoint"
+  value       = aws_eks_cluster.main.endpoint
 }
 
-output "gke_cluster_endpoint" {
-  value = google_container_cluster.angga_suriana_gke_cluster.endpoint
+output "cluster_security_group_id" {
+  description = "EKS cluster security group ID"
+  value       = aws_security_group.eks_cluster.id
 }
 
-output "gke_cluster_ca_certificate" {
-  value = google_container_cluster.angga_suriana_gke_cluster.master_auth[0].cluster_ca_certificate
+output "nodes_security_group_id" {
+  description = "EKS nodes security group ID"
+  value       = aws_security_group.eks_nodes.id
 }
 
-output "gke_access_token" {
-  value     = data.google_client_config.default.access_token
-  sensitive = true
+output "dockerhub_images" {
+  description = "DockerHub images for deployment"
+  value = {
+    backend  = "vourteen14/heypico-backend:staging"
+    frontend = "vourteen14/heypico-frontend:staging"
+  }
 }
 
+output "kubectl_config_command" {
+  description = "Command to configure kubectl"
+  value       = "aws --endpoint-url=http://localhost:4566 eks update-kubeconfig --region ${var.region} --name ${aws_eks_cluster.main.name}"
+}

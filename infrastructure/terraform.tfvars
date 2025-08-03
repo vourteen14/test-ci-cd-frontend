@@ -1,0 +1,9 @@
+region             = "us-east-1"
+environment        = "staging"
+project_name       = "heypico"
+vpc_cidr          = "10.0.0.0/16"
+cluster_version   = "1.28"
+node_instance_types = ["t3.medium"]
+node_desired_size = 2
+node_max_size     = 2
+node_min_size     = 1
