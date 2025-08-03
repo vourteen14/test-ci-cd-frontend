@@ -40,26 +40,9 @@ spec:
             - name: http
               containerPort: {{ .Values.service.backend.targetPort }}
               protocol: TCP
-          env:
-            - name: NODE_ENV
-              value: {{ .Values.env.backend.NODE_ENV }}
-            - name: HOST
-              value: {{ .Values.env.backend.HOST }}
-            - name: PORT
-              value: {{ .Values.env.backend.PORT | quote }}
-            - name: DB_HOST
-              value: {{ .Values.database.host }}
-            - name: DB_PORT
-              value: {{ .Values.database.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.database.name }}
-            - name: DB_USER
-              value: {{ .Values.database.user }}
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.database.existingSecret }}
-                  key: {{ .Values.database.secretKey }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.database.existingSecret }}
           {{- if .Values.healthCheck.backend.enabled }}
           livenessProbe:
             httpGet:
@@ -67,15 +50,25 @@ spec:
               port: http
             initialDelaySeconds: {{ .Values.healthCheck.backend.initialDelaySeconds }}
             periodSeconds: {{ .Values.healthCheck.backend.periodSeconds }}
+            timeoutSeconds: 5
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: {{ .Values.healthCheck.backend.path }}
               port: http
             initialDelaySeconds: {{ .Values.healthCheck.backend.initialDelaySeconds }}
             periodSeconds: {{ .Values.healthCheck.backend.periodSeconds }}
+            timeoutSeconds: 3
+            failureThreshold: 3
           {{- end }}
           resources:
             {{- toYaml .Values.resources.backend | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
