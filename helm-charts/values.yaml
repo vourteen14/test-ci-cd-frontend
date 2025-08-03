@@ -34,7 +34,6 @@ ingress:
   enabled: true
   className: "nginx"
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
     - host: heypico-staging.local
@@ -69,13 +68,13 @@ autoscaling:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+externalSecret:
+  secretStore: "heypico-secretstore"
+  refreshInterval: "1h"
+  vault:
+    path: "heypico-backend"
 database:
-  host: "postgres-postgresql.heypico.svc.cluster.local"
-  port: 5432
-  name: "backend"
-  user: "heypico"
   existingSecret: "postgres-secret"
-  secretKey: "password"
 env:
   backend:
     NODE_ENV: "production"
